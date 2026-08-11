@@ -1,4 +1,4 @@
-Build a "Food Order" web app
+# Build a "Food Order" web app
 
 **Guides for the app:**
 
