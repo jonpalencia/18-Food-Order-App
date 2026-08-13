@@ -1,13 +1,36 @@
-import { createContext, useState } from 'react';
+import { createContext, useReducer, useState } from 'react';
 
 export const CartContext = createContext({
-  item: [],
-  handleAddToCart: () => {},
-  handleUpdateCart: () => {},
+  items: [],
+  addItem: item => {},
+  updateItem: id => {},
 });
 
-export default function CartContextProvider({ children }) {
-  const [mealState, setMealState] = useState([]);
+// Reducer function
+function cartReducer(state, action) {
+  if (action.type === 'ADD_ITEM') {
+    // ... Add logic here.
+  }
 
-  return <CartContext.Provider>{children}</CartContext.Provider>;
+  if (action.type === 'UPDATE_ITEM') {
+    // ... Add logic here.
+  }
+
+  return {
+    ...state,
+  };
+}
+
+export default function CartContextProvider({ children }) {
+  const [cartState, dispatch] = useReducer(cartReducer, { items: [] });
+
+  const cartCtx = {
+    items: cartState.items,
+    addItem: item => {},
+    updateItem: id => {},
+  };
+
+  return (
+    <CartContext.Provider value={cartCtx}>{children}</CartContext.Provider>
+  );
 }
