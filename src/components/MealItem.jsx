@@ -1,18 +1,36 @@
+import { use, useCallback, useContext } from 'react';
+import { CartContext } from '../store/cartContext';
+import Button from './UI/Button';
 import { MEALS_URL } from '../utils/config';
+import { currencyFormatter } from '../utils/utils';
 
-export default function MealItem({ mealsState }) {
-  // TODO: Next tass is to export this list of meals to another component to make it more modular.
+export default function MealItem({ meal }) {
+  const { id, name, image, description, price } = meal;
+  const { items, addItem, removeItem } = useContext(CartContext);
 
-  const mealCards = mealsState.map(meal => {
-    const { description, id, image, name, price } = meal;
-    return (
-      <li className="meal-item" key={id}>
+  const handleAddToCart = function () {
+    addItem(meal);
+  };
+
+  const handleRemoveItem = function () {
+    // ... Remove item
+    removeItem(id);
+  };
+
+  return (
+    <li className="meal-item" key={id}>
+      <article>
         <img src={`${MEALS_URL}/${image}`} alt={name} />
-        <h3>{name}</h3>
-        <article>{description}</article>
-      </li>
-    );
-  });
-
-  return mealCards;
+        <div>
+          <h3>{name}</h3>
+          <p className="meal-item-price">{currencyFormatter.format(price)}</p>
+          <p className="meal-item-description">{description}</p>
+        </div>
+        <p className="meal-item-actions">
+          <Button onClick={handleAddToCart}>Add to Cart</Button>
+          <Button onClick={handleRemoveItem}>Remove to Cart</Button>
+        </p>
+      </article>
+    </li>
+  );
 }
