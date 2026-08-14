@@ -69,11 +69,11 @@ function cartReducer(state, action) {
 }
 
 export default function CartContextProvider({ children }) {
-  const [cartState, dispatch] = useReducer(cartReducer, { items: [] });
+  const [cartState, cartDispatch] = useReducer(cartReducer, { items: [] });
 
   const addItem = function (item) {
     // ... Add to cart feature
-    dispatch({
+    cartDispatch({
       type: 'ADD_ITEM',
       payload: item,
     });
@@ -81,13 +81,11 @@ export default function CartContextProvider({ children }) {
 
   const removeItem = function (id) {
     // ... Remove item feature
-    dispatch({
+    cartDispatch({
       type: 'REMOVE_ITEM',
       payload: id,
     });
   };
-
-  console.log(cartState);
 
   const cartCtx = {
     items: cartState.items,
