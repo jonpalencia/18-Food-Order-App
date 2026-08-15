@@ -8,12 +8,11 @@ export default function MealItem({ meal }) {
   const { id, name, image, description, price } = meal;
   const { items, addItem, removeItem } = useContext(CartContext);
 
-  const handleAddToCart = function () {
+  const handleAddToCart = function (e) {
     addItem(meal);
   };
 
   const handleRemoveItem = function () {
-    // ... Remove item
     removeItem(id);
   };
 
@@ -28,7 +27,6 @@ export default function MealItem({ meal }) {
         </div>
         <p className="meal-item-actions">
           <Button onClick={handleAddToCart}>Add to Cart</Button>
-          <Button onClick={handleRemoveItem}>Remove to Cart</Button>
         </p>
       </article>
     </li>
