@@ -123,6 +123,10 @@ h1 {
   gap: 1rem;
 }
 
+.cart-empty {
+  font-size: 1.2rem;
+}
+
 .modal-actions .text-button {
   color: #1d1a16;
 }
