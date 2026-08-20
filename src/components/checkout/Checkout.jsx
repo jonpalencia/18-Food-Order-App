@@ -18,12 +18,27 @@ export default function Checkout({}) {
     userProgressCtx.hideCheckout();
   };
 
+  const handleSubmit = function (e) {
+    e.preventDefault();
+    const userInputValues = Object.fromEntries(new FormData(e.target));
+    // Destrutured version of the form data
+    const {
+      email,
+      ['full-name']: fullName,
+      ['postal-code']: postalCode,
+      street,
+      city,
+    } = userInputValues;
+
+    console.log({ email, fullName, postalCode, street, city }, userInputValues);
+  };
+
   return (
     <Modal
       open={userProgressCtx.progress === 'checkout'}
       onClose={handleCloseCheckout}
     >
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         <p>Total Amount: {currencyFormatter.format(totalSum)}</p>
         <Input label="Full Name" type="text" id="full-name" />
