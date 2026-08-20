@@ -1,4 +1,4 @@
-import { use, useCallback, useContext } from 'react';
+import { useContext } from 'react';
 import { CartContext } from '../../store/cartContext';
 import Button from '../UI/Button';
 import { MEALS_URL } from '../../utils/config';
@@ -6,14 +6,10 @@ import { currencyFormatter } from '../../utils/utils';
 
 export default function MealItem({ meal }) {
   const { id, name, image, description, price } = meal;
-  const { items, addItem, removeItem } = useContext(CartContext);
+  const cartCtx = useContext(CartContext);
 
-  const handleAddToCart = function (e) {
-    addItem(meal);
-  };
-
-  const handleRemoveItem = function () {
-    removeItem(id);
+  const handleAddToCart = function () {
+    cartCtx.addItem(meal);
   };
 
   return (
