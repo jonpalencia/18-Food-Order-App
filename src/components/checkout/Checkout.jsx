@@ -5,8 +5,9 @@ import { useContext } from 'react';
 import { userProgressContext } from '../../store/userProgressContext';
 import { CartContext } from '../../store/cartContext';
 import { currencyFormatter } from '../../utils/utils';
+import { MEALS_URL } from '../../utils/config';
 
-export default function Checkout({}) {
+export default function Checkout() {
   const userProgressCtx = useContext(userProgressContext);
   const cartCtx = useContext(CartContext);
 
@@ -18,19 +19,30 @@ export default function Checkout({}) {
     userProgressCtx.hideCheckout();
   };
 
-  const handleSubmit = function (e) {
+  const handleSubmit = async function (e) {
     e.preventDefault();
-    const userInputValues = Object.fromEntries(new FormData(e.target));
-    // Destrutured version of the form data
-    const {
-      email,
-      ['full-name']: fullName,
-      ['postal-code']: postalCode,
-      street,
-      city,
-    } = userInputValues;
+    try {
+      const userInputValues = Object.fromEntries(new FormData(e.target));
+      const payloadJSON = JSON.stringify({
+        order: {
+          items: cartCtx.items,
+          customer: userInputValues,
+        },
+      });
 
-    console.log({ email, fullName, postalCode, street, city }, userInputValues);
+      const requestOrder = await fetch(`${MEALS_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+        body: payloadJSON,
+      });
+
+      if (!requestOrder)
+        throw new Error(`Checkout order failed, please try again...`);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -41,7 +53,7 @@ export default function Checkout({}) {
       <form onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         <p>Total Amount: {currencyFormatter.format(totalSum)}</p>
-        <Input label="Full Name" type="text" id="full-name" />
+        <Input label="Full Name" type="text" id="name" />
         <Input label="Email Address" type="email" id="email" />
         <Input label="Street Adress" type="text" id="street" />
         <div className="control-row">
