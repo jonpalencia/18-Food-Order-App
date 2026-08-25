@@ -1,13 +1,29 @@
 import Modal from '../UI/Modal';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
+import Error from '../UI/Error';
 import { useContext } from 'react';
 import { userProgressContext } from '../../store/userProgressContext';
 import { CartContext } from '../../store/cartContext';
-import { currencyFormatter } from '../../utils/utils';
+import { currencyFormatter, defaultObj } from '../../utils/utils';
 import { MEALS_URL } from '../../utils/config';
+import useHttp from '../../hooks/useHttp';
+
+const configMethod = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 export default function Checkout() {
+  const {
+    data,
+    error,
+    isLoading: isSending,
+    sendRequest,
+    clearData,
+  } = useHttp(`${MEALS_URL}/orders`, configMethod);
   const userProgressCtx = useContext(userProgressContext);
   const cartCtx = useContext(CartContext);
 
@@ -19,31 +35,37 @@ export default function Checkout() {
     userProgressCtx.hideCheckout();
   };
 
+  const handleFinishSubmit = function () {
+    cartCtx.clearCart();
+    userProgressCtx.hideCheckout();
+    clearData(defaultObj.initData);
+  };
+
   const handleSubmit = async function (e) {
     e.preventDefault();
-    try {
-      const userInputValues = Object.fromEntries(new FormData(e.target));
-      const payloadJSON = JSON.stringify({
-        order: {
-          items: cartCtx.items,
-          customer: userInputValues,
-        },
-      });
-
-      const requestOrder = await fetch(`${MEALS_URL}/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'Application/json',
-        },
-        body: payloadJSON,
-      });
-
-      if (!requestOrder)
-        throw new Error(`Checkout order failed, please try again...`);
-    } catch (err) {
-      console.error(err);
-    }
+    const userInputValues = Object.fromEntries(new FormData(e.target));
+    const payloadJSON = JSON.stringify({
+      order: {
+        items: cartCtx.items,
+        customer: userInputValues,
+      },
+    });
+    sendRequest(payloadJSON);
   };
+
+  if (!Array.isArray(data) && data && !error) {
+    return (
+      <Modal
+        open={userProgressCtx.progress === 'checkout'}
+        onClose={handleFinishSubmit}
+      >
+        <h2>Your order has been succesfully placed!</h2>
+        <p>Your order is now preparing...</p>
+        <p>Your food will arive soon</p>
+        <Button onClick={handleFinishSubmit}>Okay</Button>
+      </Modal>
+    );
+  }
 
   return (
     <Modal
@@ -60,11 +82,25 @@ export default function Checkout() {
           <Input label="Postal Code" type="text" id="postal-code" />
           <Input label="City" type="text" id="city" />
         </div>
+
+        {error && (
+          <Error
+            title="Submit order failed"
+            message="Please try to check and submit your order again...."
+          />
+        )}
+
         <p className="modal-actions">
-          <Button textOnly type="button" onClick={handleCloseCheckout}>
-            Close
-          </Button>
-          <Button>Submit Order</Button>
+          {isSending ? (
+            <span>Placing your order...</span>
+          ) : (
+            <>
+              <Button textOnly type="button" onClick={handleCloseCheckout}>
+                Close
+              </Button>
+              <Button>Submit Order</Button>
+            </>
+          )}
         </p>
       </form>
     </Modal>
