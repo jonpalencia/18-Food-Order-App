@@ -4,6 +4,7 @@ export const CartContext = createContext({
   items: [],
   addItem: item => {},
   removeItem: id => {},
+  clearCart: () => {},
 });
 
 // Reducer function
@@ -65,15 +66,21 @@ function cartReducer(state, action) {
     };
   }
 
+  if (action.type === 'CLEAR_CART') {
+    return { ...state, items: [] };
+  }
+
   return state;
 }
 
 export default function CartContextProvider({ children }) {
-  const [cartState, cartDispatch] = useReducer(cartReducer, { items: [] });
+  const [cartState, dispatchCartAction] = useReducer(cartReducer, {
+    items: [],
+  });
 
   const addItem = function (item) {
     // ... Add to cart feature
-    cartDispatch({
+    dispatchCartAction({
       type: 'ADD_ITEM',
       payload: item,
     });
@@ -81,9 +88,15 @@ export default function CartContextProvider({ children }) {
 
   const removeItem = function (id) {
     // ... Remove item feature
-    cartDispatch({
+    dispatchCartAction({
       type: 'REMOVE_ITEM',
       payload: id,
+    });
+  };
+
+  const clearCart = function () {
+    dispatchCartAction({
+      type: 'CLEAR_CART',
     });
   };
 
@@ -91,6 +104,7 @@ export default function CartContextProvider({ children }) {
     items: cartState.items,
     addItem,
     removeItem,
+    clearCart,
   };
 
   return (
