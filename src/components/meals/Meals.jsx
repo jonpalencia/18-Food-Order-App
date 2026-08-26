@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
 import MealItem from './MealItem';
-import { MEALS_URL } from '../../utils/config';
-import { defaultObj, sendHttpRequest } from '../../utils/utils';
+import { MEALS_URL, defaultObj } from '../../utils/config';
 import useHttp from '../../hooks/useHttp';
 
 export default function Meals() {

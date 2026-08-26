@@ -2,12 +2,12 @@ import Modal from '../UI/Modal';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
 import Error from '../UI/Error';
+import useHttp from '../../hooks/useHttp';
 import { useContext } from 'react';
 import { userProgressContext } from '../../store/userProgressContext';
 import { CartContext } from '../../store/cartContext';
-import { currencyFormatter, defaultObj } from '../../utils/utils';
-import { MEALS_URL } from '../../utils/config';
-import useHttp from '../../hooks/useHttp';
+import { currencyFormatter } from '../../utils/utils';
+import { MEALS_URL, defaultObj } from '../../utils/config';
 
 const configMethod = {
   method: 'POST',
@@ -56,12 +56,13 @@ export default function Checkout() {
   if (!Array.isArray(data) && data && !error) {
     return (
       <Modal
+        className="center"
         open={userProgressCtx.progress === 'checkout'}
         onClose={handleFinishSubmit}
       >
-        <h2>Your order has been succesfully placed!</h2>
-        <p>Your order is now preparing...</p>
-        <p>Your food will arive soon</p>
+        <h2>Order is succesfully placed!</h2>
+        <p> Food is now preparing 🥣 </p>
+        <p>Arriving soon...</p>
         <Button onClick={handleFinishSubmit}>Okay</Button>
       </Modal>
     );
@@ -73,7 +74,7 @@ export default function Checkout() {
       onClose={handleCloseCheckout}
     >
       <form onSubmit={handleSubmit}>
-        <h2>Checkout</h2>
+        .<h2>Checkout</h2>
         <p>Total Amount: {currencyFormatter.format(totalSum)}</p>
         <Input label="Full Name" type="text" id="name" />
         <Input label="Email Address" type="email" id="email" />
@@ -82,14 +83,12 @@ export default function Checkout() {
           <Input label="Postal Code" type="text" id="postal-code" />
           <Input label="City" type="text" id="city" />
         </div>
-
         {error && (
           <Error
             title="Submit order failed"
             message="Please try to check and submit your order again...."
           />
         )}
-
         <p className="modal-actions">
           {isSending ? (
             <span>Placing your order...</span>

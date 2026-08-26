@@ -1,6 +1,6 @@
+import Button from '../UI/Button';
 import { useContext } from 'react';
 import { CartContext } from '../../store/cartContext';
-import Button from '../UI/Button';
 import { MEALS_URL } from '../../utils/config';
 import { currencyFormatter } from '../../utils/utils';
 
