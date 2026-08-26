@@ -1,4 +1,4 @@
-import { createContext, useReducer, useState } from 'react';
+import { createContext, useReducer } from 'react';
 
 export const CartContext = createContext({
   items: [],
@@ -66,6 +66,7 @@ function cartReducer(state, action) {
     };
   }
 
+  // Reset / Clear all items in the cart.
   if (action.type === 'CLEAR_CART') {
     return { ...state, items: [] };
   }
@@ -95,6 +96,7 @@ export default function CartContextProvider({ children }) {
   };
 
   const clearCart = function () {
+    // ... Clear cart feature
     dispatchCartAction({
       type: 'CLEAR_CART',
     });

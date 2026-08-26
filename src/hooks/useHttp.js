@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { sendHttpRequest } from '../utils/utils';
 
 export default function useHttp(url, config, initState) {
-  // TODO: Add and define a custom hook for sending request.
-
   const [data, setData] = useState(initState);
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
